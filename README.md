@@ -12,7 +12,7 @@
   const CONFIG = {
     businessName: "МИДИС",              // Название бизнеса клиента
     businessInitial: "М",                 // Буква для штампа
-    yandexReviewUrl: "https://yandex.ru/maps/-/CTWoiXzK", // Ссылка "оставить отзыв" на карточке в Яндекс.Картах
+    yandexReviewUrl: "https://yandex.ru/maps/org/mezhdunarodny_institut_dizayna_i_servisa/1113168468?si=rvkugj8458nhh5gbucduqfnvu4", // Ссылка "оставить отзыв" на карточке в Яндекс.Картах
     webhookUrl: "https://script.google.com/macros/s/AKfycbyPjTC0Wp5E-SBMwEiBkJIyOBcg4vfdVJ8Fc5Gwo7RF92hJ0b2jslgjJFwuRn6g4vquCA/exec", // URL из Google Apps Script (шаг 1 инструкции)
     clientId: "midis-demo"              // Короткий идентификатор точки — пригодится, когда клиентов станет много
   };

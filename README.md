@@ -1,2 +1,293 @@
-# -
-тест
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Оцените нас</title>
+<style>
+  /* ====================================================================
+     НАСТРОЙКА ПОД КЛИЕНТА — меняй только это перед показом/установкой
+     ==================================================================== */
+</style>
+<script>
+  const CONFIG = {
+    businessName: "Компас",              // Название бизнеса клиента
+    businessInitial: "К",                 // Буква для штампа
+    yandexReviewUrl: "https://yandex.ru/maps/-/CDtXXXXX", // Ссылка "оставить отзыв" на карточке в Яндекс.Картах
+    webhookUrl: "PASTE_APPS_SCRIPT_URL_HERE", // URL из Google Apps Script (шаг 1 инструкции)
+    clientId: "compass-demo"              // Короткий идентификатор точки — пригодится, когда клиентов станет много
+  };
+</script>
+</head>
+<body>
+
+<style>
+  :root{
+    --bg:#14120F;
+    --surface:#1F1B16;
+    --surface-2:#28221B;
+    --ink:#F3EEE4;
+    --ink-muted:#9C9184;
+    --amber:#E2A542;
+    --amber-dim:#8A6A34;
+    --sage:#7A9471;
+    --line:#3A332A;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 50% -10%, #241F18 0%, var(--bg) 55%);
+    color:var(--ink);
+    font-family:'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100%;
+    padding:24px;
+  }
+  @font-face{
+    font-family:'Bebas Neue';
+    src:local('Bebas Neue');
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  .card{
+    width:100%;
+    max-width:400px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:40px 28px 32px;
+    text-align:center;
+    position:relative;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+
+  /* Штамп — сигнатурный элемент */
+  .stamp{
+    width:84px;
+    height:84px;
+    margin:0 auto 20px;
+    border-radius:50%;
+    border:3px solid var(--amber);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:38px;
+    color:var(--amber);
+    letter-spacing:1px;
+    transform:scale(2.4) rotate(-14deg);
+    opacity:0;
+    animation:stamp-in 0.5s cubic-bezier(.2,.9,.25,1) 0.15s forwards;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .stamp{ animation-duration:0.01s; }
+  }
+  @keyframes stamp-in{
+    0%{ transform:scale(2.4) rotate(-14deg); opacity:0; }
+    60%{ opacity:1; }
+    100%{ transform:scale(1) rotate(-6deg); opacity:1; }
+  }
+
+  h1{
+    font-family:'Bebas Neue', sans-serif;
+    font-weight:400;
+    font-size:30px;
+    letter-spacing:0.5px;
+    margin:0 0 6px;
+  }
+  .sub{
+    color:var(--ink-muted);
+    font-size:15px;
+    margin:0 0 28px;
+  }
+
+  .stars{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .star-btn{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    border:1.5px solid var(--line);
+    background:var(--surface-2);
+    color:var(--ink-muted);
+    font-size:22px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .star-btn:hover{ transform:translateY(-3px); border-color:var(--amber-dim); }
+  .star-btn:focus-visible{ outline:2px solid var(--amber); outline-offset:3px; }
+  .star-btn.active{
+    border-color:var(--amber);
+    color:var(--amber);
+    background:rgba(226,165,66,0.12);
+  }
+  .scale-labels{
+    display:flex;
+    justify-content:space-between;
+    font-size:11px;
+    color:var(--ink-muted);
+    padding:0 4px;
+    margin-top:6px;
+  }
+
+  .panel{ margin-top:26px; }
+  textarea{
+    width:100%;
+    min-height:90px;
+    resize:vertical;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    color:var(--ink);
+    font-family:inherit;
+    font-size:14px;
+    padding:12px;
+  }
+  textarea:focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
+
+  .btn-primary{
+    margin-top:14px;
+    width:100%;
+    background:var(--amber);
+    color:#1A140A;
+    border:none;
+    border-radius:10px;
+    padding:14px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .btn-primary:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .btn-primary:disabled{ opacity:0.5; cursor:default; }
+
+  .hidden{ display:none; }
+
+  .result-icon{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:20px;
+    color:var(--sage);
+    letter-spacing:0.5px;
+  }
+  .result p{ color:var(--ink-muted); font-size:14px; margin-top:8px; }
+
+  .footnote{
+    margin-top:28px;
+    font-size:11px;
+    color:#5C5346;
+    letter-spacing:0.3px;
+  }
+</style>
+
+<div class="card">
+  <div class="stamp" id="stamp"></div>
+  <h1 id="title"></h1>
+  <p class="sub">Как вам у нас сегодня? Это займёт 5 секунд.</p>
+
+  <div id="ratingPanel">
+    <div class="stars" id="stars"></div>
+    <div class="scale-labels"><span>Не понравилось</span><span>Отлично</span></div>
+  </div>
+
+  <div id="feedbackPanel" class="panel hidden">
+    <textarea id="feedbackText" placeholder="Что можно улучшить? Это увидит только владелец."></textarea>
+    <button class="btn-primary" id="sendFeedback">Отправить</button>
+  </div>
+
+  <div id="resultPanel" class="panel hidden result">
+    <div class="result-icon" id="resultTitle"></div>
+    <p id="resultText"></p>
+  </div>
+
+  <div class="footnote">Оценка передаётся напрямую владельцу заведения</div>
+</div>
+
+<script>
+  document.getElementById('stamp').textContent = CONFIG.businessInitial;
+  document.getElementById('title').textContent = CONFIG.businessName;
+
+  const starsEl = document.getElementById('stars');
+  let chosen = null;
+
+  for(let i=1;i<=5;i++){
+    const b = document.createElement('button');
+    b.className = 'star-btn';
+    b.textContent = '★';
+    b.setAttribute('aria-label', i + ' из 5');
+    b.addEventListener('click', () => selectRating(i, b));
+    starsEl.appendChild(b);
+  }
+
+  function selectRating(value, btnEl){
+    chosen = value;
+    [...starsEl.children].forEach((el, idx) => {
+      el.classList.toggle('active', idx < value);
+    });
+
+    logEvent({ rating: value, feedback: '' });
+
+    setTimeout(() => {
+      if(value >= 4){
+        showResult(
+          'Спасибо!',
+          'Переносим вас на Яндекс.Карты — там оценка помогает другим гостям нас найти.'
+        );
+        setTimeout(() => { window.location.href = CONFIG.yandexReviewUrl; }, 1400);
+      } else {
+        document.getElementById('ratingPanel').classList.add('hidden');
+        document.getElementById('feedbackPanel').classList.remove('hidden');
+      }
+    }, 250);
+  }
+
+  document.getElementById('sendFeedback').addEventListener('click', () => {
+    const text = document.getElementById('feedbackText').value.trim();
+    logEvent({ rating: chosen, feedback: text });
+    document.getElementById('feedbackPanel').classList.add('hidden');
+    showResult('Принято', 'Спасибо за честность — владелец увидит это сегодня же.');
+  });
+
+  function showResult(title, text){
+    document.getElementById('ratingPanel').classList.add('hidden');
+    document.getElementById('resultTitle').textContent = title;
+    document.getElementById('resultText').textContent = text;
+    document.getElementById('resultPanel').classList.remove('hidden');
+  }
+
+  function logEvent(data){
+    if(!CONFIG.webhookUrl || CONFIG.webhookUrl.startsWith('PASTE_')) return;
+    // Собираем только то, что нужно для статистики: оценку, текст жалобы (если есть) и время.
+    // Никаких идентификаторов пользователя (имя, телефон, IP, userAgent) — форма анонимна,
+    // это снимает необходимость в согласии и регистрации в РКН на этом этапе.
+    // Если позже добавишь поля контактов — понадобится чекбокс согласия, политика
+    // конфиденциальности и хранение на сервере в РФ (см. пояснение в чате).
+    const payload = {
+      clientId: CONFIG.clientId,
+      businessName: CONFIG.businessName,
+      rating: data.rating,
+      feedback: data.feedback,
+      timestamp: new Date().toISOString()
+    };
+    // no-cors: не читаем ответ, просто фиксируем событие — этого достаточно для лога
+    fetch(CONFIG.webhookUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    }).catch(() => {});
+  }
+</script>
+
+</body>
+</html>

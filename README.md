@@ -21,6 +21,8 @@
 <body>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  
   :root{
     --bg:#14120F;
     --surface:#1F1B16;
@@ -46,12 +48,6 @@
     min-height:100%;
     padding:24px;
   }
-  @font-face{
-    font-family:'Bebas Neue';
-    src:local('Bebas Neue');
-  }
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
   .card{
     width:100%;
     max-width:400px;
@@ -81,7 +77,12 @@
     transform:scale(2.4) rotate(-14deg);
     opacity:0;
     animation:stamp-in 0.5s cubic-bezier(.2,.9,.25,1) 0.15s forwards;
-  }
+}
+/* Компенсируем наклон буквы */
+.stamp span{
+  display:block;
+  transform:translateY(1px) rotate(6deg);
+}
   @media (prefers-reduced-motion: reduce){
     .stamp{ animation-duration:0.01s; }
   }
@@ -190,7 +191,8 @@
 </style>
 
 <div class="card">
-  <div class="stamp" id="stamp"></div>
+  <div class="stamp" id="stamp">
+  <span id="stampLetter"></span></div>
   <h1 id="title"></h1>
   <p class="sub">Как вам у нас сегодня? Это займёт 5 секунд.</p>
 
@@ -213,7 +215,7 @@
 </div>
 
 <script>
-  document.getElementById('stamp').textContent = CONFIG.businessInitial;
+  document.getElementById('stampLetter').textContent = CONFIG.businessInitial;
   document.getElementById('title').textContent = CONFIG.businessName;
 
   const starsEl = document.getElementById('stars');

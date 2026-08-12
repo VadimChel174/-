@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -11,11 +10,11 @@
 </style>
 <script>
   const CONFIG = {
-    businessName: "Компас",              // Название бизнеса клиента
-    businessInitial: "К",                 // Буква для штампа
-    yandexReviewUrl: "https://yandex.ru/maps/-/CDtXXXXX", // Ссылка "оставить отзыв" на карточке в Яндекс.Картах
-    webhookUrl: "PASTE_APPS_SCRIPT_URL_HERE", // URL из Google Apps Script (шаг 1 инструкции)
-    clientId: "compass-demo"              // Короткий идентификатор точки — пригодится, когда клиентов станет много
+    businessName: "МИДИС",              // Название бизнеса клиента
+    businessInitial: "М",                 // Буква для штампа
+    yandexReviewUrl: "https://yandex.ru/maps/-/CTWoiXzK", // Ссылка "оставить отзыв" на карточке в Яндекс.Картах
+    webhookUrl: "https://script.google.com/macros/s/AKfycbyPjTC0Wp5E-SBMwEiBkJIyOBcg4vfdVJ8Fc5Gwo7RF92hJ0b2jslgjJFwuRn6g4vquCA/exec", // URL из Google Apps Script (шаг 1 инструкции)
+    clientId: "midis-demo"              // Короткий идентификатор точки — пригодится, когда клиентов станет много
   };
 </script>
 </head>
